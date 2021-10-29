@@ -1,0 +1,71 @@
+/* 
+  Localizable.strings
+  YoyoFree
+
+  Created by Rudy on 2021-10-26.
+  
+*/
+
+//ContentView
+"app-name" = "Yoyo Test";
+"app-name2" = "Recovery Level 1";
+"test-type" = "Type of Test";
+"test-type-msg" = "Please change the type of test by tapping the label on the main screen";
+"total" = "Total:";
+"howto" = "HowTo. The Basics";
+"howto-msg" = "
+- Flat surface
+- Mark 20 meters
+- Start at one end, on beep
+- Touch other end on/before beep
+- One-foot touch is fine
+- Start back only on beep
+- Reach back on/before beep
+- Rest. Repeat
+- Run back and forth
+- Reach after beep is 'fail'
+- Fail 2 consecutive ... end
+
+Caution: Apple's design standards prevent the app from running in the background.
+";
+"query-comment" = "Query/Comment";
+"write-above" = "Please write above this line";
+"volume-low" = "Volume Low";
+"volume-low-msg" = "Caution: your device volume may be too low for sounds to be heard easily";
+"ok" = "OK";
+"dont-show-again" = "Dont Show Again";
+"settings-msg" = "Settings (will help the developer)";
+"stop-run" = "Stop Run?";
+"are-you-sure" = "Are you sure?";
+"yes" = "Yes";
+"no" = "No";
+"close" = "Close";
+
+//ResultView
+"result" = "Result";
+"you-scored" = "Your Distance:";
+
+//SettingsView
+"test-options"="Test Options";
+"confirm-stop"="Confirm Stop";
+"confirm-stop-msg"="Caters to accidental Stop button presses. If checked, will display a timed dialog box to confirm you actually want to stop the test";
+"auto-stop"="Auto Stop";
+"auto-stopped"="Auto Stopped";
+"auto-stop-msg"="Stops the test automatically. You must hold the device when running; place it on the floor when done";
+"auto-stop-alert"="Sorry, your device does not detect movement. AutoStop will not work";
+
+"sound-options" = "Sound Options";
+"voice-on" = "Voice Cue";
+"voice-on-msg" = "Enables voice cues at every level change";
+"check-volume"="Check Volume on Start";
+"check-volume-msg"="When checked, you will be alerted to a low volume setting (only at app startup)";
+"fix-volume"="Lock Volume";
+"fix-volume-msg"="Prevents accidental volume changes when running. Comes into effect after the pre-run countdown completes";
+"do-vibrate"="Vibrate";
+"do-vibrate-msg"="When checked, will vibrate at the end of every shuttle";
+"halfway-beep"="Halfway Beep";
+"halfway-beep-msg"="When checked, will beep at the shuttle's halfway point. Helps with speed adjustment. Also, if you are constrained for space";
+
+"about"="ABOUT";
+"version"="Version";
+
