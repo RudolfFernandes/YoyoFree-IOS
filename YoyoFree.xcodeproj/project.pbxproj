@@ -115,7 +115,7 @@
 		9303693F277C2B2F00CBFDF2 /* es */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = es; path = es.lproj/level28.mp3; sourceTree = "<group>"; };
 		93036941277C2B3200CBFDF2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = Base; path = Base.lproj/level29.mp3; sourceTree = "<group>"; };
 		93036943277C2B3300CBFDF2 /* es */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = es; path = es.lproj/level29.mp3; sourceTree = "<group>"; };
-		93AC08E4272899F800788C39 /* YoyoFree.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YoyoFree.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		93AC08E4272899F800788C39 /* Yoyo Test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Yoyo Test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		93AC08E7272899F800788C39 /* YoyoFreeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoyoFreeApp.swift; sourceTree = "<group>"; };
 		93AC08E9272899F800788C39 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		93AC08EB272899F900788C39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -159,7 +159,7 @@
 		93AC08E5272899F800788C39 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				93AC08E4272899F800788C39 /* YoyoFree.app */,
+				93AC08E4272899F800788C39 /* Yoyo Test.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -267,7 +267,7 @@
 			);
 			name = YoyoFree;
 			productName = YoyoFree;
-			productReference = 93AC08E4272899F800788C39 /* YoyoFree.app */;
+			productReference = 93AC08E4272899F800788C39 /* Yoyo Test.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -767,7 +767,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"YoyoFree/Preview Content\"";
 				DEVELOPMENT_TEAM = 48TB63YB2P;
 				ENABLE_PREVIEWS = YES;
@@ -784,9 +784,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.23;
+				MARKETING_VERSION = 1.0.24;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ruval.YoyoFree;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Yoyo Test";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -799,7 +799,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"YoyoFree/Preview Content\"";
 				DEVELOPMENT_TEAM = 48TB63YB2P;
 				ENABLE_PREVIEWS = YES;
@@ -816,9 +816,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.23;
+				MARKETING_VERSION = 1.0.24;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ruval.YoyoFree;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Yoyo Test";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
