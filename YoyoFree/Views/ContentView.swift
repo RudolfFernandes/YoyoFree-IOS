@@ -14,6 +14,7 @@
     2. Picking the <lang> file, right-click to "Show in Finder"
     3. In the Finder window, named <lang>.lproj, replace ALL the files with the
         actual <lang> audio files
+ TBD. Modified calculation of radius to be based on width of device
  */
 
 import SwiftUI
@@ -66,8 +67,11 @@ var startTime: Date = Date()
 var stopAlertStepCount: Int = 0
 var resultViewCalled: Bool = false
 
-let linewidth: CGFloat = 10
-let radius: CGFloat = 120
+//UIScreen.main.bounds.size.width - ipad: 1024; 8+: 414; 11ProMax:414
+// Need ipad to be twice the size of 8+, 11Promax
+let radius: CGFloat = 40 + UIScreen.main.bounds.size.width/5       // was 120
+let linewidth: CGFloat = radius/15                                // was 10
+
 var player: AVAudioPlayer?
 
 var checkVolume: Bool = false
@@ -186,6 +190,7 @@ struct ContentView: View {
                 motionManager = CMMotionManager()
                 copyExpressoDBOnce()
               }
+//              print("UIScreen.main.bounds.size.width: \(UIScreen.main.bounds.size.width)")
             }
           
           if (!isRunning) {
@@ -252,7 +257,7 @@ struct ContentView: View {
 //              .animation(.easeInOut)
 //              .animation(.linear(duration: 2), value: levelMilliSeconds)
               .scaleEffect(1.5, anchor: .center)
-              .frame(width:radius+linewidth/2, height: (radius+linewidth/2) * 2)
+              .frame(width:radius+linewidth/1.5, height: (radius+linewidth/1.5) * 2)
             
             Circle()
               .trim(from: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, to: 1 - CGFloat(CGFloat(shuttleMilliSeconds - shuttleMilliSecondsRemaining) / CGFloat(shuttleMilliSeconds)))
