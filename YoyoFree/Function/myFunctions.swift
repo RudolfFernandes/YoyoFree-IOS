@@ -61,16 +61,19 @@ struct myFunctions {
     
 //    print ("correctionMilliSecs: \(correctionMilliSecs)")
     
-    // Apply correction, if any. Factore tried (iphone 7): 15:10, 13:10, 10:10
+    // Apply correction, if any. Factore tried (iphone 7): 135:100, 145:199, 13:10
     // Turns out, most correction can be effected in the rest period
+    // 10000: 15-1.5s back; 12000: 21-2s back; 14000: 19-1.5s back; 16000: 19-1.5s back;
+    let baseMsPerShuttle = Int ((Double(MYSHUTTLEDISTANCE * 1000)) / (Double(mySpeedMetersPerHour)/3600))
+    
     let msPerShuttle: Int = Int ((Double(MYSHUTTLEDISTANCE * 1000)) / (Double(mySpeedMetersPerHour)/3600))
-        - ((correctionMilliSecs * 13) / (noShuttles * 10))
+        - (correctionMilliSecs  * 12000) / (noShuttles * baseMsPerShuttle)
     
     
     // Need to round this to the nearest timerStep millisecs
     let roundFactor = Int(timerStep * 1000)
     
-    print ("msPerShuttle: \(msPerShuttle)    Rounded: \(((msPerShuttle+roundFactor)/roundFactor) * roundFactor)")
+//    print ("msPerShuttle: \(msPerShuttle)    Rounded: \(((msPerShuttle+roundFactor)/roundFactor) * roundFactor)")
 
     return ((msPerShuttle+roundFactor)/roundFactor) * roundFactor
   }

@@ -6,6 +6,10 @@
 //  Copied from BleepUKP
 // 26Oct2021. 1/1.0. Deployed on AppStore
 
+// To Do (as on 29Oct2021)
+//  1. Timing testing
+//  2. Complete functional testing
+
 import SwiftUI
 import AVFoundation
 import MessageUI
@@ -18,7 +22,7 @@ var levelShuttles = [Int] ()
 let COUNTDOWNMILLISECS = 5000
 var RESTMILLISECS = 10000
 let MINVO2MAXMETERS = 1000
-let timerStep: Double = 0.05
+let timerStep: Double = 0.02      // Max cpu: 0.05-20%; 0.01-60; 0.2-42
 var restAdjustMillis: Int = 0
 var playedRest: Bool = true
 
@@ -115,7 +119,12 @@ struct ContentView: View {
   @State private var autoStopped: Bool = false
   @State var restSecsLeft: Int = 0
   
-  let testTypeArray = ["Recovery Level 1","Recovery Level 2","Endurance Level 1","Endurance Level 2"]
+  let testTypeArray = [
+    NSLocalizedString("recovery", comment:"") + " " + NSLocalizedString("level", comment:"") + " 1",
+    NSLocalizedString("recovery", comment:"") + " " + NSLocalizedString("level", comment:"") + " 2",
+    NSLocalizedString("endurance", comment:"") + " " + NSLocalizedString("level", comment:"") + " 1",
+    NSLocalizedString("endurance", comment:"") + " " + NSLocalizedString("level", comment:"") + " 2",
+  ]
   
   @StateObject var mySetting = theSetting()
   @StateObject var myInfo = theInfo()
@@ -162,7 +171,8 @@ struct ContentView: View {
           Text(appName)
             .font(.largeTitle)
             .foregroundColor(.yellow)
-            .scaleEffect(1.25, anchor: .center)
+            .padding(.bottom, -5)
+//            .scaleEffect(1.1, anchor: .center)
             .onAppear {
               
               if (!resultViewCalled) {
@@ -178,7 +188,7 @@ struct ContentView: View {
                 Text(String(testTypeArray[$0]))
               }
             }.pickerStyle(DefaultPickerStyle())
-              .scaleEffect(1.75, anchor: .center)
+              .scaleEffect(1.5, anchor: .center)
               .onChange(of: testTypeElement) { _ in
                 UserDefaults.standard.set(testTypeElement, forKey: "testType")
                 //              assignSpeedShuttleArray()
@@ -189,7 +199,7 @@ struct ContentView: View {
               .font(.title)
               .foregroundColor(.green)
               .padding(.bottom, -5)
-              .padding(.top, 0)
+              .padding(.top, -5)
           }
         }
         .padding(.bottom)
@@ -554,7 +564,7 @@ struct ContentView: View {
               myFunction.playSound(numRepeats: 0, soundFile: "beep")
             }
             isResting = false
-            print("Rest Ended : \(Int(Date().timeIntervalSince(startTime) * 1000))")
+//            print("Rest Ended : \(Int(Date().timeIntervalSince(startTime) * 1000))")
             totRestMilliSecs = 0
           }
           return
@@ -577,17 +587,19 @@ struct ContentView: View {
           
           if (shuttlesDoneAtLevel % 2 == 0) {
             
-            print("Rest started : \(Int(Date().timeIntervalSince(startTime) * 1000))")
-            restAdjustMillis = RESTMILLISECS -
-                (Int(Date().timeIntervalSince(startTime) * 1000)
-                  - (totMilliSecsRun + Int(timerStep*1000))) * 35 / 40
-            print ("restAdjustMillis: \(restAdjustMillis)")
+            //            print("Rest started : \(Int(Date().timeIntervalSince(startTime) * 1000))")
+            // Tried 32:40, 30:40, 39:40, 34:40 (21-4s behind), 36:40 (18-3s behind), 365:400 (17-1.5s behind)
+            //    37:40, 35:40 (20-3s behind), 355:400 (14-2s behind), 365:400 (14-2sec back)
+            restAdjustMillis = RESTMILLISECS - (Int(Date().timeIntervalSince(startTime) * 1000)
+                                                  - (totMilliSecsRun)) * 365 / 400
+            //            print ("restAdjustMillis: \(restAdjustMillis)")
+            
             totMilliSecsRun += RESTMILLISECS - restAdjustMillis
             
             isResting = true
             restSecsLeft = RESTMILLISECS/1000
             myFunction.playSound(numRepeats: 0, soundFile: "built_in_rest_beep")
-
+            
           }
           totShuttlesRun += 1
           shuttleMilliSecondsRemaining = shuttleMilliSeconds

@@ -14,7 +14,7 @@ struct LapsImageView: View {
   var body: some View {
     
     VStack(spacing: -10) {
-      Text(appName + " " + NSLocalizedString("result", comment: ""))
+      Text(appName)
         .font(.largeTitle)
         .foregroundColor(.blue)
         .padding()

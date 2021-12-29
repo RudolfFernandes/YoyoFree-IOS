@@ -10,6 +10,9 @@
 "app-name" = "Yoyo Test";
 "app-name2" = "Recovery Level 1";
 "test-type" = "Type of Test";
+"recovery" = "Recovery";
+"endurance" = "Endurance";
+"level" = "Level";
 "test-type-msg" = "Please change the type of test by tapping the label on the main screen";
 "total" = "Total:";
 "howto" = "HowTo. The Basics";
@@ -26,7 +29,7 @@
 - Reach after beep is 'fail'
 - Fail 2 consecutive ... end
 
-Caution: Apple's design standards prevent the app from running in the background.
+Caution: this app will not run in the background.
 ";
 "query-comment" = "Query/Comment";
 "write-above" = "Please write above this line";
