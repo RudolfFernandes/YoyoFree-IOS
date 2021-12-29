@@ -4,11 +4,17 @@
 //
 //  Created by Rudy on 2021-10-25
 //  Copied from BleepUKP
-// 26Oct2021. 1/1.0. Deployed on AppStore
-
-// To Do (as on 29Oct2021)
-//  1. Timing testing
-//  2. Complete functional testing
+/*
+ 26Oct2021. 1/1.0. Deployed on AppStore
+ 29Dec2021. 2/1.0.23. Added spanish sounds (
+  Procedure:
+    1. "Localize" all audio files, checking the relevant <lang> in the File Inspector window
+          This is done one at a time. Xcode copies the base file into the <lang> directory
+    2. Expand any audio <file>. You will see the (Base) file, along with the (Lang) file
+    2. Picking the <lang> file, right-click to "Show in Finder"
+    3. In the Finder window, named <lang>.lproj, replace ALL the files with the
+        actual <lang> audio files
+ */
 
 import SwiftUI
 import AVFoundation
