@@ -14,7 +14,9 @@
     2. Picking the <lang> file, right-click to "Show in Finder"
     3. In the Finder window, named <lang>.lproj, replace ALL the files with the
         actual <lang> audio files
- TBD. Modified calculation of radius to be based on width of device
+ 29De2021. 3/1.0.24 Modified calculation of radius to be based on width of device
+    Corrected the app name (General - Display name)
+    Modified target to 15.0
  */
 
 import SwiftUI
