@@ -17,6 +17,10 @@
  29De2021. 3/1.0.24 Modified calculation of radius to be based on width of device
     Corrected the app name (General - Display name)
     Modified target to 15.0
+ 16Jan2022. 5/1.0.25. Removed stoprun() from quotealert code
+    Added StopAlertView to handle the stopAlert (when confirmStop is true), else alert is unresponsive
+    When confirmStop, switched showStopAlert handling into dispatchqueue
+ 20Jan2022. 6/1.0.26. Modified "end of run" check
  */
 
 import SwiftUI
@@ -58,6 +62,7 @@ let appName2 = NSLocalizedString("app-name2", comment:"")
 var currentLevel: Int = 1
 var shuttlesAtLevel: Int = 0
 var shuttlesDoneAtLevel: Int = 0
+var stopTheRun = false
 
 var totCountdownMilliSecs = 0
 var totMilliSecsRun: Int = 0
@@ -324,6 +329,10 @@ struct ContentView: View {
         
         HStack(spacing: 15) {
           
+          // Required to show responsive alert while timer is running
+          // Placed here because it appears to take a tiny bit of space
+          StopAlertView(showStopAlert: $showStopAlert)
+          
           if (!isRunning && !showReset) {
             Button(action: {
               showingAlert = true
@@ -392,7 +401,14 @@ struct ContentView: View {
                 } else {
                   
                   if (mySetting.confirmStop) {
-                    showStopAlert = true
+                    //16Jan22. Modified to trigger stop alert thru a view of its own
+                    //  This eliminates the responsiveness problem cause by a small timerStep (which requires a lot
+                    //    or re-rendering of this main view)
+                    // StopAlertView triggers stopRun() through a global variable, stopTheRun
+                    showStopAlert = true          // this will trigger alert via StopAlertView (call is above)
+                    
+                    // 15Jan2022. Added dispatchqueue (commented code in onRecieve)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {showStopAlert = false})
                   } else {
                     stopRun()
                   }
@@ -467,24 +483,24 @@ struct ContentView: View {
           })
         }
         
-        if (showStopAlert) {
-          Text("").alert(isPresented: $showStopAlert, content: {
-            Alert(title: Text("stop-run"),
-                  message: Text("are-you-sure"),
-                  primaryButton:  Alert.Button.default(
-                    Text("yes"), action: {
-                      showStopAlert = false
-                      stopRun()
-                    }
-                  ),
-                  secondaryButton: Alert.Button.default(
-                    Text("no"), action: {
-                      showStopAlert = false
-                    }
-                  )
-            )
-          })
-        }
+//        if (showStopAlert) {
+//          Text("").alert(isPresented: $showStopAlert, content: {
+//            Alert(title: Text("stop-run"),
+//                  message: Text("are-you-sure"),
+//                  primaryButton:  Alert.Button.default(
+//                    Text("yes"), action: {
+//                      showStopAlert = false
+//                      stopRun()
+//                    }
+//                  ),
+//                  secondaryButton: Alert.Button.default(
+//                    Text("no"), action: {
+//                      showStopAlert = false
+//                    }
+//                  )
+//            )
+//          })
+//        }
         
         if (showQuoteAlert) {
           Text("").alert(isPresented: $showQuoteAlert, content: {
@@ -493,7 +509,6 @@ struct ContentView: View {
                   dismissButton: Alert.Button.default(
                     Text("close"), action: {
                       showQuoteAlert = false
-                      stopRun()
                     }
                   )
             )
@@ -504,7 +519,10 @@ struct ContentView: View {
       .onReceive(timer, perform: { _ in
         guard isRunning  else { return }
         
-        
+        // stopTheRun works with StopAlertView
+        if (stopTheRun) {
+          stopRun()
+        }
         
         // If autoStop is on, start checking for movement
         if (mySetting.autoStop && !isCountingDown) {
@@ -526,15 +544,15 @@ struct ContentView: View {
           }
         }
         
-        // Show stop alert for 3 seconds
-        if (showStopAlert) {
-          stopAlertStepCount += 1
-          if (stopAlertStepCount > Int(Double(3)/timerStep)) {
-            showStopAlert = false
-          }
-        } else {
-          stopAlertStepCount = 0
-        }
+//        // Show stop alert for 3 seconds
+//        if (showStopAlert) {
+//          stopAlertStepCount += 1
+//          if (stopAlertStepCount > Int(Double(3)/timerStep)) {
+//            showStopAlert = false
+//          }
+//        } else {
+//          stopAlertStepCount = 0
+//        }
             
         if (isCountingDown) {
           if (totCountdownMilliSecs % 1000 == 0) {
@@ -651,8 +669,9 @@ struct ContentView: View {
           // Conflicts with Rest beep
 //          myFunction.playSound(numRepeats: 0, soundFile: "beep2")
           
-          //Stop at Level 21
-          if (currentLevel > 17) {
+          // 20Jan2022. Modified next line [crashes reported... obviously!]
+//          if (currentLevel > 17) {
+          if (levelSpeedMetersPerHour[currentLevel-1] == 0) {
             stopRun()
           } else {
             
@@ -703,6 +722,7 @@ struct ContentView: View {
   func stopRun() {
     isRunning = false
     isResting = false
+    stopTheRun = false
     
     myInfo.myDistance = totShuttlesRun * MYSHUTTLEDISTANCE
     
@@ -912,6 +932,28 @@ extension Bundle {
   }
   var releaseVersionNumberPretty: String {
     return "v\(releaseVersionNumber ?? "1.0.0")"
+  }
+}
+
+struct StopAlertView: View {
+  @Binding var showStopAlert: Bool
+    var body: some View {
+      Text("").alert(isPresented: $showStopAlert, content: {
+        Alert(title: Text("stop-run"),
+              message: Text("are-you-sure"),
+              primaryButton:  Alert.Button.default(
+                Text("yes"), action: {
+                  showStopAlert = false
+                  stopTheRun = true
+                }
+              ),
+              secondaryButton: Alert.Button.default(
+                Text("no"), action: {
+                  showStopAlert = false
+                }
+              )
+        )
+      })
   }
 }
 
