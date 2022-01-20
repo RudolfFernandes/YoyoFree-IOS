@@ -54,6 +54,7 @@
 		93AC09BA2728AEC800788C39 /* ticktock.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 93AC099C2728AEC700788C39 /* ticktock.mp3 */; };
 		93AC09C02729BBA300788C39 /* built_in_rest_beep.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 93AC09BF2729BBA300788C39 /* built_in_rest_beep.mp3 */; };
 		93AC09C1272AB23100788C39 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 93AC09C3272AB23100788C39 /* Localizable.strings */; };
+		93E8999B2799809E00429877 /* ZoomableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E8999A2799809E00429877 /* ZoomableScrollView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -135,6 +136,7 @@
 		93AC09BF2729BBA300788C39 /* built_in_rest_beep.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = built_in_rest_beep.mp3; sourceTree = "<group>"; };
 		93AC09C2272AB23100788C39 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		93AC09C4272AB23500788C39 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		93E8999A2799809E00429877 /* ZoomableScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZoomableScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +192,7 @@
 		93AC08F527289A7100788C39 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				93E8999A2799809E00429877 /* ZoomableScrollView.swift */,
 				93AC08E9272899F800788C39 /* ContentView.swift */,
 				93AC08F627289AA200788C39 /* MailView.swift */,
 				93AC08F827289AE200788C39 /* ResultView.swift */,
@@ -362,6 +365,7 @@
 				93AC08EA272899F800788C39 /* ContentView.swift in Sources */,
 				93AC08FD27289B2B00788C39 /* LapsImageView.swift in Sources */,
 				93AC08F927289AE200788C39 /* ResultView.swift in Sources */,
+				93E8999B2799809E00429877 /* ZoomableScrollView.swift in Sources */,
 				93AC08F727289AA200788C39 /* MailView.swift in Sources */,
 				93AC08E8272899F800788C39 /* YoyoFreeApp.swift in Sources */,
 				93AC090027289B6A00788C39 /* myFunctions.swift in Sources */,

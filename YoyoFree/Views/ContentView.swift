@@ -21,6 +21,7 @@
     Added StopAlertView to handle the stopAlert (when confirmStop is true), else alert is unresponsive
     When confirmStop, switched showStopAlert handling into dispatchqueue
  20Jan2022. 6/1.0.26. Modified "end of run" check
+      Added ZoomableView for LapsImage
  */
 
 import SwiftUI
@@ -78,6 +79,10 @@ var resultViewCalled: Bool = false
 // Need ipad to be twice the size of 8+, 11Promax
 let radius: CGFloat = 40 + UIScreen.main.bounds.size.width/5       // was 120
 let linewidth: CGFloat = radius/15                                // was 10
+
+// Fix frame dimensions. Avoids issues with device orientation changes
+let framewidth = UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width ? UIScreen.main.bounds.size.width : UIScreen.main.bounds.size.height
+let frameheight = UIScreen.main.bounds.size.height > UIScreen.main.bounds.size.width ? UIScreen.main.bounds.size.height : UIScreen.main.bounds.size.width
 
 var player: AVAudioPlayer?
 
@@ -482,25 +487,6 @@ struct ContentView: View {
             )
           })
         }
-        
-//        if (showStopAlert) {
-//          Text("").alert(isPresented: $showStopAlert, content: {
-//            Alert(title: Text("stop-run"),
-//                  message: Text("are-you-sure"),
-//                  primaryButton:  Alert.Button.default(
-//                    Text("yes"), action: {
-//                      showStopAlert = false
-//                      stopRun()
-//                    }
-//                  ),
-//                  secondaryButton: Alert.Button.default(
-//                    Text("no"), action: {
-//                      showStopAlert = false
-//                    }
-//                  )
-//            )
-//          })
-//        }
         
         if (showQuoteAlert) {
           Text("").alert(isPresented: $showQuoteAlert, content: {
