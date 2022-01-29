@@ -55,20 +55,40 @@ struct myFunctions {
     }
   }
   
-  func getShuttleMilliSeconds (mySpeedMetersPerHour: Int, noShuttles: Int, correctionMilliSecs: Int) -> Int {
+  /// Calculates the total milliseconds that should elapse (since the start) at the end of a specific level
+  /// Will be used to adjust the time for the next level
+  /// - Returns: Total milliseconds that should have elapsed at the end of a level
+  func getExpectedRunningMs (mLevel: Int) -> Int {
+    var i = 0
+    var totMs = 0
+    while (i < mLevel) {
+      totMs += (levelShuttles[i] * MYSHUTTLEDISTANCE * 3600 * 1000) / levelSpeedMetersPerHour[i]
+      
+      // 29Jan2022. Significant bug (Endurance goes for a toss) -- changed next line
+      //      totMs += levelShuttles[i] * 10 * 1000 / 2     // Rest secs
+      totMs += levelShuttles[i] * RESTMILLISECS / 2     // Rest secs
+      i += 1
+    }
+    return totMs
+  }
+  
+  func getShuttleMilliSeconds (myLevel: Int, correctionMilliSecs: Int) -> Int {
 //    print ("mySpeedMetersPerSecond: \(mySpeedMetersPerSecond)   myShuttleDistance: \(myShuttleDistance)")
     
     
 //    print ("correctionMilliSecs: \(correctionMilliSecs)")
     
-    // Apply correction, if any. Factore tried (iphone 7): 135:100, 145:199, 13:10
+    // Apply correction, if any.
     // Turns out, most correction can be effected in the rest period
     // 10000: 15-1.5s back; 12000: 21-2s back; 14000: 19-1.5s back; 16000: 19-1.5s back;
-    let baseMsPerShuttle = Int ((Double(MYSHUTTLEDISTANCE * 1000)) / (Double(mySpeedMetersPerHour)/3600))
+    let baseMsPerShuttle = Int ((Double(MYSHUTTLEDISTANCE * 1000)) / (Double(levelSpeedMetersPerHour[myLevel-1])/3600))
     
-    let msPerShuttle: Int = Int ((Double(MYSHUTTLEDISTANCE * 1000)) / (Double(mySpeedMetersPerHour)/3600))
-        - (correctionMilliSecs  * 12000) / (noShuttles * baseMsPerShuttle)
-    
+    var extrapolatedCorrectMs = correctionMilliSecs
+    if (myLevel > 1) {      // Can't do this for Level 1
+      // Increase the correction proportionately
+      extrapolatedCorrectMs = correctionMilliSecs * levelShuttles[myLevel-1] / levelShuttles[myLevel-2]
+    }
+    let msPerShuttle = baseMsPerShuttle - ((extrapolatedCorrectMs * 11) / (levelShuttles[myLevel-1] * 10))
     
     // Need to round this to the nearest timerStep millisecs
     let roundFactor = Int(timerStep * 1000)
@@ -77,6 +97,29 @@ struct myFunctions {
 
     return ((msPerShuttle+roundFactor)/roundFactor) * roundFactor
   }
+  
+//  func getShuttleMilliSeconds (mySpeedMetersPerHour: Int, noShuttles: Int, correctionMilliSecs: Int) -> Int {
+////    print ("mySpeedMetersPerSecond: \(mySpeedMetersPerSecond)   myShuttleDistance: \(myShuttleDistance)")
+//
+//
+////    print ("correctionMilliSecs: \(correctionMilliSecs)")
+//
+//    // Apply correction, if any. Factore tried (iphone 7): 135:100, 145:199, 13:10
+//    // Turns out, most correction can be effected in the rest period
+//    // 10000: 15-1.5s back; 12000: 21-2s back; 14000: 19-1.5s back; 16000: 19-1.5s back;
+//    let baseMsPerShuttle = Int ((Double(MYSHUTTLEDISTANCE * 1000)) / (Double(mySpeedMetersPerHour)/3600))
+//
+//    let msPerShuttle: Int = Int ((Double(MYSHUTTLEDISTANCE * 1000)) / (Double(mySpeedMetersPerHour)/3600))
+//        - (correctionMilliSecs  * 12000) / (noShuttles * baseMsPerShuttle)
+//
+//
+//    // Need to round this to the nearest timerStep millisecs
+//    let roundFactor = Int(timerStep * 1000)
+//
+////    print ("msPerShuttle: \(msPerShuttle)    Rounded: \(((msPerShuttle+roundFactor)/roundFactor) * roundFactor)")
+//
+//    return ((msPerShuttle+roundFactor)/roundFactor) * roundFactor
+//  }
   
   func showTime (myMilliSeconds: Int) -> String {
     let myTime: Double = Double(myMilliSeconds)/1000

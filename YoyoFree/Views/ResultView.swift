@@ -23,23 +23,29 @@ struct ResultView: View {
         .font(.title2)
         .foregroundColor(.green)
         .padding(.bottom)
-      Image(myInfo.myNormsImage)
-        .resizable()
-        .scaledToFit()
-        .padding()
-      Button(action: {
-        presentationMode.wrappedValue.dismiss()
-      }) {
-        Text("ok")
-          .font(.callout)
-          .foregroundColor(.black)
-          .padding(5)
+//      Image(myInfo.myNormsImage)
+//        .resizable()
+//        .scaledToFit()
+//        .padding()
+      
+      ZoomableScrollView {
+        Image(myInfo.myNormsImage)
+          .resizable()
+          .scaledToFit()
+//          .padding()
       }
-      .buttonStyle(PlainButtonStyle())
-      .frame(minWidth:100)
-      .background(Color(UIColor.lightGray))
-      .cornerRadius(20)
-      .padding(10)
+      
+      Label ("",
+             systemImage: "arrowshape.turn.up.backward.fill")
+        .labelsHidden()
+        .foregroundColor(.blue)
+        .font(.title)
+        .scaleEffect(framewidth > 350 ? 1.25 : 1.0, anchor: .center)
+        .onTapGesture(perform: {
+          self.presentationMode.wrappedValue.dismiss()
+        })
+        .padding(.leading, framewidth > 350 ? 13 : 7)
+        .padding(.trailing, framewidth > 350 ? 13 : 7)
     }
   }
 }

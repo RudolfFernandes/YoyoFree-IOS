@@ -7,21 +7,25 @@
 /*
  26Oct2021. 1/1.0. Deployed on AppStore
  29Dec2021. 2/1.0.23. Added spanish sounds (
-  Procedure:
-    1. "Localize" all audio files, checking the relevant <lang> in the File Inspector window
-          This is done one at a time. Xcode copies the base file into the <lang> directory
-    2. Expand any audio <file>. You will see the (Base) file, along with the (Lang) file
-    2. Picking the <lang> file, right-click to "Show in Finder"
-    3. In the Finder window, named <lang>.lproj, replace ALL the files with the
-        actual <lang> audio files
+ Procedure:
+ 1. "Localize" all audio files, checking the relevant <lang> in the File Inspector window
+ This is done one at a time. Xcode copies the base file into the <lang> directory
+ 2. Expand any audio <file>. You will see the (Base) file, along with the (Lang) file
+ 2. Picking the <lang> file, right-click to "Show in Finder"
+ 3. In the Finder window, named <lang>.lproj, replace ALL the files with the
+ actual <lang> audio files
  29De2021. 3/1.0.24 Modified calculation of radius to be based on width of device
-    Corrected the app name (General - Display name)
-    Modified target to 15.0
+  Corrected the app name (General - Display name)
+  Modified target to 15.0
  16Jan2022. 5/1.0.25. Removed stoprun() from quotealert code
-    Added StopAlertView to handle the stopAlert (when confirmStop is true), else alert is unresponsive
-    When confirmStop, switched showStopAlert handling into dispatchqueue
+  Added StopAlertView to handle the stopAlert (when confirmStop is true), else alert is unresponsive
+  When confirmStop, switched showStopAlert handling into dispatchqueue
  20Jan2022. 6/1.0.26. Modified "end of run" check
-      Added ZoomableView for LapsImage
+  Added ZoomableView to LapsImageView, ResultView
+ 29Jan2022. 7/1.0.27. Added yyenonorms.png
+    Endurance Timing is off. Fixed MyFunctions.getExpectedRunningMs
+    Endurance images (yoyoie1, yoyoie2) were incorrect (assumed 10 sec rest). Fixed
+    Added image, yyenonorms for ResultView
  */
 
 import SwiftUI
@@ -35,8 +39,10 @@ var levelSpeedMetersPerHour = [Int] ()
 var levelShuttles = [Int] ()
 let COUNTDOWNMILLISECS = 5000
 var RESTMILLISECS = 10000
+var restBeepIntervalMs = 10000
+var restedSinceBeepMs = 0
 let MINVO2MAXMETERS = 1000
-let timerStep: Double = 0.02      // Max cpu: 0.05-20%; 0.01-60; 0.2-42
+let timerStep: Double = 0.05      // Max cpu: 0.05-20%; 0.01-60; 0.2-42
 var restAdjustMillis: Int = 0
 var playedRest: Bool = true
 
@@ -111,7 +117,7 @@ class theSetting: ObservableObject {
   @Published var fixVolume: Bool = UserDefaults.standard.bool(forKey: "fixVolume")
   @Published var halfwayBeep: Bool = UserDefaults.standard.bool(forKey: "halfwayBeep")
   @Published var doVibrate: Bool = UserDefaults.standard.bool(forKey: "doVibrate")
-//  @Published var currentLevelSpeedMetersPerHour: Int = levelSpeedMetersPerHour[0]
+  //  @Published var currentLevelSpeedMetersPerHour: Int = levelSpeedMetersPerHour[0]
 }
 
 class theInfo: ObservableObject {
@@ -175,14 +181,14 @@ struct ContentView: View {
       showVolumeAlert = false
     }
     
-      
+    
     initDefaultSettings()
     // Running initNumbers() in init gives a warning: "Accessing StateObject's object without
     //  being installed on a View. This will create a new instance each time." Couldn't figure
     //  out what it means, but the solution is to "inject" into the view by executing
     //  initnumbers() in an .onappear attached to any element in the view. I've added it to
     //  Text(appName)
-//     initNumbers()
+    //     initNumbers()
   }
   
   var body: some View {
@@ -194,7 +200,7 @@ struct ContentView: View {
             .font(.largeTitle)
             .foregroundColor(.yellow)
             .padding(.bottom, -5)
-//            .scaleEffect(1.1, anchor: .center)
+          //            .scaleEffect(1.1, anchor: .center)
             .onAppear {
               
               if (!resultViewCalled) {
@@ -202,7 +208,7 @@ struct ContentView: View {
                 motionManager = CMMotionManager()
                 copyExpressoDBOnce()
               }
-//              print("UIScreen.main.bounds.size.width: \(UIScreen.main.bounds.size.width)")
+              
             }
           
           if (!isRunning) {
@@ -247,14 +253,14 @@ struct ContentView: View {
                 .foregroundColor(.green)
             }
             if (mySetting.autoStop) {
-                Text ("auto-stop")
-                  .font(.callout).scaleEffect(0.5, anchor: .center)
-                  .foregroundColor(.green)
+              Text ("auto-stop")
+                .font(.callout).scaleEffect(0.5, anchor: .center)
+                .foregroundColor(.green)
             }
           }
         }
         .padding(.leading, 20).padding(.trailing, 20)
-          
+        
         VStack (spacing: -30) {
           ZStack {
             Circle().stroke(Color.gray.opacity(0.2),
@@ -266,8 +272,8 @@ struct ContentView: View {
               .trim(from: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, to: 1 - CGFloat(CGFloat(levelMilliSeconds - levelMilliSecondsRemaining) / CGFloat(levelMilliSeconds)))
               .stroke(Color.green, style: StrokeStyle(lineWidth: linewidth/1.5, lineCap: .round))
               .rotationEffect(.degrees(-90))
-//              .animation(.easeInOut)
-//              .animation(.linear(duration: 2), value: levelMilliSeconds)
+            //              .animation(.easeInOut)
+            //              .animation(.linear(duration: 2), value: levelMilliSeconds)
               .scaleEffect(1.5, anchor: .center)
               .frame(width:radius+linewidth/1.5, height: (radius+linewidth/1.5) * 2)
             
@@ -275,15 +281,15 @@ struct ContentView: View {
               .trim(from: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, to: 1 - CGFloat(CGFloat(shuttleMilliSeconds - shuttleMilliSecondsRemaining) / CGFloat(shuttleMilliSeconds)))
               .stroke(Color.yellow, style: StrokeStyle(lineWidth: linewidth/1.5, lineCap: .round))
               .rotationEffect(.degrees(-90))
-//              .animation(.easeInOut)
-//              .animation(.linear(duration: 2), value: shuttleMilliSeconds)
+            //              .animation(.easeInOut)
+            //              .animation(.linear(duration: 2), value: shuttleMilliSeconds)
               .scaleEffect(1.5, anchor: .center)
               .frame(width:radius-linewidth/2, height: (radius-linewidth/2) * 2)
             
             VStack (spacing: (10)){
               
               Text("\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour)):\(shuttlesDoneAtLevel/2)").font(.title)
-                  .scaleEffect(isRunning ? 2 : 1.8)
+                .scaleEffect(isRunning ? 2 : 1.8)
               
               if (!isRunning && showReset && (testTypeElement == 0)
                   && (totShuttlesRun * MYSHUTTLEDISTANCE >= MINVO2MAXMETERS)) {
@@ -294,10 +300,10 @@ struct ContentView: View {
                 Text(String(format: "%.1f km/h", Double(currentLevelSpeedMetersPerHour)/1000))
                   .font(.title3).padding(.top, 5).padding(.bottom, -15)
               }
-//              if (isResting && totRestMilliSecs % 1000 == 0) {
+              //              if (isResting && totRestMilliSecs % 1000 == 0) {
               if (isResting) {
-                  Text(String(format: "%d", restSecsLeft))
-                    .font(.title).padding(.top, 5).padding(.bottom, -15)
+                Text(String(format: "%d", restSecsLeft))
+                  .font(.title).padding(.top, 5).padding(.bottom, -15)
               }
             }
             
@@ -318,14 +324,14 @@ struct ContentView: View {
                 .foregroundColor(.yellow)
             }
             if (mySetting.halfwayBeep) {
-                Text ("halfway-beep")
-                  .font(.callout).scaleEffect(0.5, anchor: .center)
-                  .foregroundColor(.yellow)
+              Text ("halfway-beep")
+                .font(.callout).scaleEffect(0.5, anchor: .center)
+                .foregroundColor(.yellow)
             }
             if (mySetting.doVibrate) {
-                Text ("do-vibrate")
-                  .font(.callout).scaleEffect(0.5, anchor: .center)
-                  .foregroundColor(.yellow)
+              Text ("do-vibrate")
+                .font(.callout).scaleEffect(0.5, anchor: .center)
+                .foregroundColor(.yellow)
             }
           }
         }
@@ -364,7 +370,7 @@ struct ContentView: View {
                 MailView(isShowing: self.$isShowingMailView, result: self.$result,
                          mailRecipients: developerEmail,
                          mailSubject: NSLocalizedString("app-name", comment: "") + " - "
-                          + NSLocalizedString("query-comment", comment: ""),
+                         + NSLocalizedString("query-comment", comment: ""),
                          mailMessageBody: """
                         <br>
                         _________________________<br>
@@ -530,16 +536,6 @@ struct ContentView: View {
           }
         }
         
-//        // Show stop alert for 3 seconds
-//        if (showStopAlert) {
-//          stopAlertStepCount += 1
-//          if (stopAlertStepCount > Int(Double(3)/timerStep)) {
-//            showStopAlert = false
-//          }
-//        } else {
-//          stopAlertStepCount = 0
-//        }
-            
         if (isCountingDown) {
           if (totCountdownMilliSecs % 1000 == 0) {
             myFunction.playSound(numRepeats: 0, soundFile: "level\((COUNTDOWNMILLISECS - totCountdownMilliSecs)/1000)")
@@ -556,23 +552,31 @@ struct ContentView: View {
         }
         
         if (isResting) {
-          if ((totRestMilliSecs % (restAdjustMillis/(RESTMILLISECS/1000)) < Int(timerStep * 1000)) && !playedRest) {
+          
+          // The following line appears to be very cpu-intensiv3 (CPU during rest -iphone7- jumps by 10-15%)
+          //    Replaced with restedSinceBeepMs, restBeepIntervalMs
+          // if ((totRestMilliSecs % (restAdjustMillis/(RESTMILLISECS/1000)) < Int(timerStep * 1000)) && !playedRest) {
+          if (restedSinceBeepMs >= restBeepIntervalMs) {
 
+            restedSinceBeepMs = 0
             myFunction.playSound(numRepeats: 0, soundFile: "built_in_rest_beep")
-            restSecsLeft = Int((RESTMILLISECS-totRestMilliSecs)/1000)
+//            restSecsLeft = Int((RESTMILLISECS-totRestMilliSecs)/1000)
+            restSecsLeft -= 1
+            
             playedRest = true
-//            print ("totRestMilliSecs: \(totRestMilliSecs)   restAdjustMillis/(RESTMILLISECS/1000): \(restAdjustMillis/(RESTMILLISECS/1000))")
-//            print ("restSecsLeft: \(restSecsLeft)")
-//              print ("restCorrection: \(restAdjustMillis * 4 / 10)")
+            //            print ("totRestMilliSecs: \(totRestMilliSecs)   restAdjustMillis/(RESTMILLISECS/1000): \(restAdjustMillis/(RESTMILLISECS/1000))")
+            //            print ("restSecsLeft: \(restSecsLeft)")
+            //              print ("restCorrection: \(restAdjustMillis * 4 / 10)")
           } else {
             playedRest = false
           }
           
-//          print ("restAdjustMillis: \(restAdjustMillis)")
+          //          print ("restAdjustMillis: \(restAdjustMillis)")
+          restedSinceBeepMs += Int(timerStep*1000)
           totRestMilliSecs += Int(timerStep*1000)
           totMilliSecsRun += Int(timerStep*1000)
           
-//          if (totRestMilliSecs >= RESTMILLISECS-(restAdjustMillis * 2)) {
+          //          if (totRestMilliSecs >= RESTMILLISECS-(restAdjustMillis * 2)) {
           if (totRestMilliSecs >= restAdjustMillis) {
             
             if (shuttlesDoneAtLevel == 0) { // Level had finished
@@ -581,8 +585,9 @@ struct ContentView: View {
               myFunction.playSound(numRepeats: 0, soundFile: "beep")
             }
             isResting = false
-//            print("Rest Ended : \(Int(Date().timeIntervalSince(startTime) * 1000))")
+            //            print("Rest Ended : \(Int(Date().timeIntervalSince(startTime) * 1000))")
             totRestMilliSecs = 0
+            restedSinceBeepMs = 0
           }
           return
         }
@@ -608,10 +613,11 @@ struct ContentView: View {
             // Tried 32:40, 30:40, 39:40, 34:40 (21-4s behind), 36:40 (18-3s behind), 365:400 (17-1.5s behind)
             //    37:40, 35:40 (20-3s behind), 355:400 (14-2s behind), 365:400 (14-2sec back)
             restAdjustMillis = RESTMILLISECS - (Int(Date().timeIntervalSince(startTime) * 1000)
-                                                  - (totMilliSecsRun)) * 365 / 400
+                                                - (totMilliSecsRun)) * 365 / 400
             //            print ("restAdjustMillis: \(restAdjustMillis)")
-            
+                      
             totMilliSecsRun += RESTMILLISECS - restAdjustMillis
+            restBeepIntervalMs = restAdjustMillis / (RESTMILLISECS/1000)
             
             isResting = true
             restSecsLeft = RESTMILLISECS/1000
@@ -627,6 +633,11 @@ struct ContentView: View {
           playedHalfwayBeep = false
         }
         
+        // 24Jan2022. Added next IF so that, during rest just before next level, the current level is shown
+        if (isResting) {
+          return
+        }
+        
         // Play halfway beep
         if (mySetting.halfwayBeep && !playedHalfwayBeep) {
           if (shuttleMilliSecondsRemaining < shuttleMilliSeconds/2) {
@@ -640,29 +651,31 @@ struct ContentView: View {
           // Play speed level cue a little bit after the level beep is done
           if (!playedLevelCue && mySetting.voiceOn) {
             if (levelMilliSeconds-levelMilliSecondsRemaining == 800) {
-                  myFunction.playSound(numRepeats: 0, soundFile: "level\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour))")
+              myFunction.playSound(numRepeats: 0, soundFile: "level\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour))")
               
               playedLevelCue = true
             }
           }
           
         } else {    // Level completed
-      
+          
           shuttlesDoneAtLevel = 0
           currentLevel += 1
           playedLevelCue = false
           
           // Conflicts with Rest beep
-//          myFunction.playSound(numRepeats: 0, soundFile: "beep2")
+          //          myFunction.playSound(numRepeats: 0, soundFile: "beep2")
           
           // 20Jan2022. Modified next line [crashes reported... obviously!]
-//          if (currentLevel > 17) {
+          //          if (currentLevel > 17) {
           if (levelSpeedMetersPerHour[currentLevel-1] == 0) {
             stopRun()
           } else {
+            let missedMs = Int(Date().timeIntervalSince(startTime) * 1000) - myFunction.getExpectedRunningMs(mLevel: currentLevel-1)
             
             let lostMilliSecs = Int(Date().timeIntervalSince(startTime) * 1000) - totMilliSecsRun
             
+//            print ("Tag: \(currentLevel). lostMilliSecs = \(lostMilliSecs), missedMs = \(missedMs)")
             
             totMilliSecsRun += lostMilliSecs
             
@@ -670,13 +683,14 @@ struct ContentView: View {
             shuttlesAtLevel = levelShuttles[currentLevel-1]
             
             // Fix Rest periods. Tried 40:10 (30 secs fast thru entire test), 30:10, 27:10
-//            restAdjustMillis = RESTMILLISECS - ((lostMilliSecs * 27) / (shuttlesAtLevel * 10))
+            //            restAdjustMillis = RESTMILLISECS - ((lostMilliSecs * 27) / (shuttlesAtLevel * 10))
             
-            shuttleMilliSeconds = myFunction.getShuttleMilliSeconds (
-              mySpeedMetersPerHour:  currentLevelSpeedMetersPerHour,
-              noShuttles: shuttlesAtLevel, correctionMilliSecs: lostMilliSecs)
+//            shuttleMilliSeconds = myFunction.getShuttleMilliSeconds (
+//              mySpeedMetersPerHour:  currentLevelSpeedMetersPerHour,
+//              noShuttles: shuttlesAtLevel, correctionMilliSecs: lostMilliSecs)
+            shuttleMilliSeconds = myFunction.getShuttleMilliSeconds(myLevel: currentLevel, correctionMilliSecs: lostMilliSecs+missedMs)
             levelMilliSeconds = shuttleMilliSeconds * shuttlesAtLevel
-          
+            
             
             self.levelMilliSecondsRemaining = levelMilliSeconds
             self.shuttleMilliSecondsRemaining = shuttleMilliSeconds
@@ -688,9 +702,9 @@ struct ContentView: View {
         shuttleMilliSecondsRemaining = shuttleMilliSecondsRemaining - Int(timerStep*1000)
       })
     }
-      .padding(.top, -100)
-      .environmentObject(mySetting)
-      .navigationViewStyle(StackNavigationViewStyle())  // ipad; else, blank screen
+    .padding(.top, -100)
+    .environmentObject(mySetting)
+    .navigationViewStyle(StackNavigationViewStyle())  // ipad; else, blank screen
   }
   
   func getSpeedLevel(speedMetersPerHour: Int) -> String {
@@ -746,7 +760,8 @@ struct ContentView: View {
     restSecsLeft = RESTMILLISECS/1000
     
     currentLevelSpeedMetersPerHour = levelSpeedMetersPerHour [currentLevel-1]
-    shuttleMilliSeconds = myFunction.getShuttleMilliSeconds (mySpeedMetersPerHour: levelSpeedMetersPerHour[currentLevel-1], noShuttles: levelShuttles[currentLevel-1], correctionMilliSecs: 0)
+//    shuttleMilliSeconds = myFunction.getShuttleMilliSeconds (mySpeedMetersPerHour: levelSpeedMetersPerHour[currentLevel-1], noShuttles: levelShuttles[currentLevel-1], correctionMilliSecs: 0)
+    shuttleMilliSeconds = myFunction.getShuttleMilliSeconds(myLevel: currentLevel, correctionMilliSecs: 0)
     levelMilliSeconds = levelShuttles[currentLevel-1] * shuttleMilliSeconds
     
     self.levelMilliSecondsRemaining = levelMilliSeconds
@@ -759,7 +774,7 @@ struct ContentView: View {
     autoStopped = false
     resultViewCalled = false
     isResting = false
-//    restAdjustMillis = 0
+    //    restAdjustMillis = 0
     totRestMilliSecs = 0
   }
   
@@ -773,7 +788,7 @@ struct ContentView: View {
     let htmlTab = "&nbsp;&nbsp;&nbsp;&nbsp;"
     var myString: String = ""
     //String(testTypeArray[testTypeElement]
-           
+    
     myString.append("<br>" + NSLocalizedString("test-options", bundle: bundle, comment:"") + "<br>")
     myString.append(htmlTab + NSLocalizedString("test-type", bundle: bundle, comment:"")
                     + ": \(String(testTypeArray[testTypeElement]))<br>")
@@ -853,13 +868,13 @@ struct ContentView: View {
       levelShuttles = Elevel1shuttles
       RESTMILLISECS = 5000
       myInfo.myLapsImage = "yoyoie1"
-      myInfo.myNormsImage = ""
+      myInfo.myNormsImage = "yyenonorms"
     case 3:
       levelSpeedMetersPerHour = Elevel2speed
       levelShuttles = Elevel2shuttles
       RESTMILLISECS = 5000
       myInfo.myLapsImage = "yoyoie2"
-      myInfo.myNormsImage = ""
+      myInfo.myNormsImage = "yyenonorms"
       
     default:
       print ("What the heck!")
@@ -888,8 +903,8 @@ struct ContentView: View {
 }
 
 func getQuote() -> String {
-//  var db: SQLiteDatabase
-//  var myQuote: String = "";
+  //  var db: SQLiteDatabase
+  //  var myQuote: String = "";
   
   let runCount: Int = UserDefaults.standard.integer(forKey: "runCount")
   UserDefaults.standard.set(runCount+1, forKey: "runCount")
@@ -905,7 +920,7 @@ func getQuote() -> String {
       print("Unable to open database.")
     }
   }
-    
+  
   return ""
 }
 
@@ -923,23 +938,23 @@ extension Bundle {
 
 struct StopAlertView: View {
   @Binding var showStopAlert: Bool
-    var body: some View {
-      Text("").alert(isPresented: $showStopAlert, content: {
-        Alert(title: Text("stop-run"),
-              message: Text("are-you-sure"),
-              primaryButton:  Alert.Button.default(
-                Text("yes"), action: {
-                  showStopAlert = false
-                  stopTheRun = true
-                }
-              ),
-              secondaryButton: Alert.Button.default(
-                Text("no"), action: {
-                  showStopAlert = false
-                }
-              )
-        )
-      })
+  var body: some View {
+    Text("").alert(isPresented: $showStopAlert, content: {
+      Alert(title: Text("stop-run"),
+            message: Text("are-you-sure"),
+            primaryButton:  Alert.Button.default(
+              Text("yes"), action: {
+                showStopAlert = false
+                stopTheRun = true
+              }
+            ),
+            secondaryButton: Alert.Button.default(
+              Text("no"), action: {
+                showStopAlert = false
+              }
+            )
+      )
+    })
   }
 }
 
