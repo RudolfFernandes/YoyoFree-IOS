@@ -26,6 +26,10 @@
     Endurance Timing is off. Fixed MyFunctions.getExpectedRunningMs
     Endurance images (yoyoie1, yoyoie2) were incorrect (assumed 10 sec rest). Fixed
     Added image, yyenonorms for ResultView
+ 03Feb2022. 8/1.0.28. Fixed getSpeedLevel bug (affected endurance level display)
+    Fixed display of Endurance speed (2 decimal places)
+    Fixed level cue of levels like 13.5
+    timerStep 0.25 (not sure when this was changed)
  */
 
 import SwiftUI
@@ -42,9 +46,10 @@ var RESTMILLISECS = 10000
 var restBeepIntervalMs = 10000
 var restedSinceBeepMs = 0
 let MINVO2MAXMETERS = 1000
-let timerStep: Double = 0.05      // Max cpu: 0.05-20%; 0.01-60; 0.2-42
+let timerStep: Double = 0.25      // Max cpu: 0.25-4%, 0.20-5%, 0.10-10%, 0.05-20%; 0.01-60; 0.2-42
 var restAdjustMillis: Int = 0
 var playedRest: Bool = true
+var oldSecs: Int = 0
 
 // Define & Initialize the arrays that define the speed and # of shuttles at
 // each level for each Yoyo variant
@@ -146,6 +151,7 @@ struct ContentView: View {
   @State private var showQuoteAlert: Bool = false
   @State private var autoStopped: Bool = false
   @State var restSecsLeft: Int = 0
+  @State var theTime = "0:00"
   
   let testTypeArray = [
     NSLocalizedString("recovery", comment:"") + " " + NSLocalizedString("level", comment:"") + " 1",
@@ -234,7 +240,11 @@ struct ContentView: View {
         .padding(.bottom)
         
         if (isRunning || showReset) {
-          Text(NSLocalizedString("total", comment:"") + " \(myFunction.showTime(myMilliSeconds: totMilliSecsRun)) [\(totShuttlesRun * MYSHUTTLEDISTANCE) m]")
+          Text(NSLocalizedString("total", comment:"")
+               + " " + theTime
+               + " [\(totShuttlesRun * MYSHUTTLEDISTANCE) m]")
+//            Text(NSLocalizedString("total", comment:"")
+//               + " \(myFunction.showTime(myMilliSeconds: totMilliSecsRun)) [\(totShuttlesRun * MYSHUTTLEDISTANCE) m]")
             .font(.title2)
             .foregroundColor(.white)
             .padding(.top, 5).padding(.bottom)
@@ -272,7 +282,8 @@ struct ContentView: View {
               .trim(from: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, to: 1 - CGFloat(CGFloat(levelMilliSeconds - levelMilliSecondsRemaining) / CGFloat(levelMilliSeconds)))
               .stroke(Color.green, style: StrokeStyle(lineWidth: linewidth/1.5, lineCap: .round))
               .rotationEffect(.degrees(-90))
-            //              .animation(.easeInOut)
+              .animation(.easeInOut(duration: 2), value: 1)
+//                          .animation(.easeInOut)
             //              .animation(.linear(duration: 2), value: levelMilliSeconds)
               .scaleEffect(1.5, anchor: .center)
               .frame(width:radius+linewidth/1.5, height: (radius+linewidth/1.5) * 2)
@@ -281,15 +292,20 @@ struct ContentView: View {
               .trim(from: /*@START_MENU_TOKEN@*/0.0/*@END_MENU_TOKEN@*/, to: 1 - CGFloat(CGFloat(shuttleMilliSeconds - shuttleMilliSecondsRemaining) / CGFloat(shuttleMilliSeconds)))
               .stroke(Color.yellow, style: StrokeStyle(lineWidth: linewidth/1.5, lineCap: .round))
               .rotationEffect(.degrees(-90))
-            //              .animation(.easeInOut)
+//              .animation(.easeIn, value: timerStep*20)
+//                          .animation(.default)
             //              .animation(.linear(duration: 2), value: shuttleMilliSeconds)
               .scaleEffect(1.5, anchor: .center)
               .frame(width:radius-linewidth/2, height: (radius-linewidth/2) * 2)
             
             VStack (spacing: (10)){
-              
-              Text("\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour)):\(shuttlesDoneAtLevel/2)").font(.title)
-                .scaleEffect(isRunning ? 2 : 1.8)
+              if (testTypeElement < 2) {   // Recovery
+                Text("\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour)):\(shuttlesDoneAtLevel/2)").font(.title)
+                  .scaleEffect(isRunning ? 2 : 1.8)
+              } else {    // Endurance
+                Text("\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour)):\(shuttlesDoneAtLevel/2)").font(.title)
+                  .scaleEffect(isRunning ? 1.5 : 1.3)
+              }
               
               if (!isRunning && showReset && (testTypeElement == 0)
                   && (totShuttlesRun * MYSHUTTLEDISTANCE >= MINVO2MAXMETERS)) {
@@ -297,13 +313,21 @@ struct ContentView: View {
                 Text(String(format: "Vo2Max %.1f", myFunction.calcVo2Max(myMetersRun: totShuttlesRun * MYSHUTTLEDISTANCE)))
                   .font(.title3).padding(.top, 5)
               } else {
-                Text(String(format: "%.1f km/h", Double(currentLevelSpeedMetersPerHour)/1000))
-                  .font(.title3).padding(.top, 5).padding(.bottom, -15)
+                if (!isResting) {
+                if (testTypeElement < 2) {   // Recovery
+                  Text(String(format: "%.1f km/h", Double(currentLevelSpeedMetersPerHour)/1000))
+                    .font(.title3).padding(.top, 5).padding(.bottom, -15)
+                } else {   // Endurance
+                  Text(String(format: "%.2f km/h", Double(currentLevelSpeedMetersPerHour)/1000))
+                    .scaleEffect(framewidth > 400 ? 0.9 : 0.75, anchor: .center)
+                    .font(.title3).padding(.top, 5).padding(.bottom, -15)
+                }
+                }
               }
-              //              if (isResting && totRestMilliSecs % 1000 == 0) {
               if (isResting) {
                 Text(String(format: "%d", restSecsLeft))
-                  .font(.title).padding(.top, 5).padding(.bottom, -15)
+                  .font(.largeTitle)
+                  .padding(.top, 5).padding(.bottom, -15)
               }
             }
             
@@ -575,6 +599,7 @@ struct ContentView: View {
           restedSinceBeepMs += Int(timerStep*1000)
           totRestMilliSecs += Int(timerStep*1000)
           totMilliSecsRun += Int(timerStep*1000)
+          setTime()     // for the seconds display
           
           //          if (totRestMilliSecs >= RESTMILLISECS-(restAdjustMillis * 2)) {
           if (totRestMilliSecs >= restAdjustMillis) {
@@ -617,6 +642,7 @@ struct ContentView: View {
             //            print ("restAdjustMillis: \(restAdjustMillis)")
                       
             totMilliSecsRun += RESTMILLISECS - restAdjustMillis
+//            setTime()     // for the seconds display
             restBeepIntervalMs = restAdjustMillis / (RESTMILLISECS/1000)
             
             isResting = true
@@ -651,7 +677,15 @@ struct ContentView: View {
           // Play speed level cue a little bit after the level beep is done
           if (!playedLevelCue && mySetting.voiceOn) {
             if (levelMilliSeconds-levelMilliSecondsRemaining == 800) {
-              myFunction.playSound(numRepeats: 0, soundFile: "level\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour))")
+              if (currentLevelSpeedMetersPerHour % 500 == 0) {
+                myFunction.playSound(numRepeats: 0, soundFile: "level\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour))")
+              } else {
+                myFunction.playSound(numRepeats: 0, soundFile: "level\(getSpeedLevel(speedMetersPerHour: (currentLevelSpeedMetersPerHour / 500) * 500))")
+              
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
+                  myFunction.playSound(numRepeats: 0, soundFile: "level5")}
+                )
+              }
               
               playedLevelCue = true
             }
@@ -678,6 +712,7 @@ struct ContentView: View {
 //            print ("Tag: \(currentLevel). lostMilliSecs = \(lostMilliSecs), missedMs = \(missedMs)")
             
             totMilliSecsRun += lostMilliSecs
+//            setTime()     // for the seconds display
             
             currentLevelSpeedMetersPerHour = levelSpeedMetersPerHour[currentLevel-1]
             shuttlesAtLevel = levelShuttles[currentLevel-1]
@@ -698,6 +733,7 @@ struct ContentView: View {
         }
         
         totMilliSecsRun = totMilliSecsRun + Int(timerStep*1000)
+        setTime()     // for the seconds display
         levelMilliSecondsRemaining = levelMilliSecondsRemaining - Int(timerStep*1000)
         shuttleMilliSecondsRemaining = shuttleMilliSecondsRemaining - Int(timerStep*1000)
       })
@@ -711,12 +747,21 @@ struct ContentView: View {
     let adjustedSpeed = (speedMetersPerHour-7500) * 2
     
     if (adjustedSpeed % 1000 == 0) {
-      return String(format: "%.0f", Double(adjustedSpeed/1000))
+      return String(format: "%.0f", Double(adjustedSpeed)/1000)
     }
-    if (adjustedSpeed % 500 == 0) {
-      return String(format: "%.1f", Double(adjustedSpeed/1000))
+//    if (adjustedSpeed % 500 == 0) {
+      return String(format: "%.1f", Double(adjustedSpeed)/1000)
+//    }
+//    return String(format: "%.2f", Double(adjustedSpeed/1000))
+  }
+  
+  /// Used to reduce calls to myFunction.showtime to once every second. Earlier the call was every millisecond
+  ///     resulting into significant CPU usage
+  func setTime () {
+    if (totMilliSecsRun / 1000 != oldSecs) {
+      theTime = myFunction.showTime(myMilliSeconds: totMilliSecsRun)
+      oldSecs = totMilliSecsRun / 1000
     }
-    return String(format: "%.2f", Double(adjustedSpeed/1000))
   }
   
   func stopRun() {
@@ -769,6 +814,7 @@ struct ContentView: View {
     
     totCountdownMilliSecs = 0
     totMilliSecsRun = 0
+    setTime()     // for the seconds display
     totShuttlesRun = 0
     playedLevelCue = false
     autoStopped = false
@@ -776,6 +822,7 @@ struct ContentView: View {
     isResting = false
     //    restAdjustMillis = 0
     totRestMilliSecs = 0
+    restedSinceBeepMs = 0
   }
   
   func getSettings() -> String {
