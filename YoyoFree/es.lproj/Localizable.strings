@@ -15,7 +15,7 @@
 "level" = "Nivel";
 "test-type-msg" = "Cambie el tipo de prueba tocando la etiqueta en la pantalla principal";
 "total" = "Total:";
-"howto" = "Cómo. Los basicos";
+"howto" = "Los basicos";
 "howto-msg" = "
 - Superficie plana
 - Marca 20 metros
@@ -47,6 +47,7 @@ Precaución: esta aplicación no se ejecutará en segundo plano.
 //ResultView
 "result" = "Resultado";
 "you-scored" = "Tu distancia:";
+"laps-table" = "Tabla de Vueltas";
 
 //SettingsView
 "test-options"="Opciones de prueba";

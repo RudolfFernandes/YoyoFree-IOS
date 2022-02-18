@@ -14,25 +14,21 @@ struct ResultView: View {
   var body: some View {
     
     VStack(spacing: -10) {
-      Text(appName + " " + NSLocalizedString("result", comment: ""))
+      // 18Feb22. Changed next line
+      // Text(appName + " " + NSLocalizedString("result", comment: ""))
+      Text(NSLocalizedString("result", comment: ""))
         .font(.largeTitle)
         .foregroundColor(.blue)
         .padding()
       Text(NSLocalizedString("you-scored", comment: "") + " \(myInfo.myDistance) m")
-//      + String(format: "%d", myInfo.myDistance))
         .font(.title2)
         .foregroundColor(.green)
         .padding(.bottom)
-//      Image(myInfo.myNormsImage)
-//        .resizable()
-//        .scaledToFit()
-//        .padding()
       
       ZoomableScrollView {
         Image(myInfo.myNormsImage)
           .resizable()
           .scaledToFit()
-//          .padding()
       }
       
       Label ("",

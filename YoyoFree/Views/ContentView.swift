@@ -30,6 +30,9 @@
     Fixed display of Endurance speed (2 decimal places)
     Fixed level cue of levels like 13.5
     timerStep 0.25 (not sure when this was changed)
+ 06Feb22. 9/1.0.29. Fixed voicecue bug related to timerStep change (see playedLevelCue code)
+ 18Feb22. 10/1.0.30. Added German, Portuguese, Italian
+      Some minor UI changes
  */
 
 import SwiftUI
@@ -240,8 +243,10 @@ struct ContentView: View {
         .padding(.bottom)
         
         if (isRunning || showReset) {
-          Text(NSLocalizedString("total", comment:"")
-               + " " + theTime
+          Text(
+            // 18Feb22. Commented next line
+//            NSLocalizedString("total", comment:"") + " " +
+              theTime
                + " [\(totShuttlesRun * MYSHUTTLEDISTANCE) m]")
 //            Text(NSLocalizedString("total", comment:"")
 //               + " \(myFunction.showTime(myMilliSeconds: totMilliSecsRun)) [\(totShuttlesRun * MYSHUTTLEDISTANCE) m]")
@@ -301,7 +306,7 @@ struct ContentView: View {
             VStack (spacing: (10)){
               if (testTypeElement < 2) {   // Recovery
                 Text("\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour)):\(shuttlesDoneAtLevel/2)").font(.title)
-                  .scaleEffect(isRunning ? 2 : 1.8)
+                  .scaleEffect(isRunning ? 1.8 : 1.6)
               } else {    // Endurance
                 Text("\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour)):\(shuttlesDoneAtLevel/2)").font(.title)
                   .scaleEffect(isRunning ? 1.5 : 1.3)
@@ -313,22 +318,23 @@ struct ContentView: View {
                 Text(String(format: "Vo2Max %.1f", myFunction.calcVo2Max(myMetersRun: totShuttlesRun * MYSHUTTLEDISTANCE)))
                   .font(.title3).padding(.top, 5)
               } else {
-                if (!isResting) {
-                if (testTypeElement < 2) {   // Recovery
-                  Text(String(format: "%.1f km/h", Double(currentLevelSpeedMetersPerHour)/1000))
-                    .font(.title3).padding(.top, 5).padding(.bottom, -15)
-                } else {   // Endurance
-                  Text(String(format: "%.2f km/h", Double(currentLevelSpeedMetersPerHour)/1000))
-                    .scaleEffect(framewidth > 400 ? 0.9 : 0.75, anchor: .center)
-                    .font(.title3).padding(.top, 5).padding(.bottom, -15)
-                }
-                }
+                  if (testTypeElement < 2) {   // Recovery
+                    Text(String(format: "%.1f km/h", Double(currentLevelSpeedMetersPerHour)/1000))
+                      .font(.title3).padding(.top, 5).padding(.bottom, -15)
+                  } else {   // Endurance
+                    Text(String(format: "%.2f km/h", Double(currentLevelSpeedMetersPerHour)/1000))
+                      .scaleEffect(framewidth > 400 ? 0.9 : 0.75, anchor: .center)
+                      .font(.title3).padding(.top, 5).padding(.bottom, -15)
+                  }
               }
-              if (isResting) {
-                Text(String(format: "%d", restSecsLeft))
-                  .font(.largeTitle)
-                  .padding(.top, 5).padding(.bottom, -15)
-              }
+            }
+            // 18Feb22. Moved this out of the vStack (level display was gettng corrupt)
+            if (isResting) {
+              Text(String(format: "%d", restSecsLeft))
+                .font(.largeTitle)
+                .foregroundColor(.gray)
+                .scaleEffect(1.0, anchor: .center)
+                .padding(.bottom, (framewidth > 600 ? framewidth/6 : framewidth/3.4))
             }
             
           }
@@ -676,7 +682,9 @@ struct ContentView: View {
           
           // Play speed level cue a little bit after the level beep is done
           if (!playedLevelCue && mySetting.voiceOn) {
-            if (levelMilliSeconds-levelMilliSecondsRemaining == 800) {
+            // 06Feb22. Modified next line. Can fail if timerStep doesn't match
+//            if (levelMilliSeconds-levelMilliSecondsRemaining == 800) {
+            if (levelMilliSeconds-levelMilliSecondsRemaining > 500) {
               if (currentLevelSpeedMetersPerHour % 500 == 0) {
                 myFunction.playSound(numRepeats: 0, soundFile: "level\(getSpeedLevel(speedMetersPerHour: currentLevelSpeedMetersPerHour))")
               } else {

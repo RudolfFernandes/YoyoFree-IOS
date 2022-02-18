@@ -64,6 +64,14 @@ struct SettingsView: View {
         
       } //.padding(.top, -10).padding(.bottom, -10)
       
+      Section {
+        Label ("", systemImage: "arrow.backward")
+          .font(.title2)
+          .onTapGesture(perform: {
+            presentationMode.wrappedValue.dismiss()
+          })
+      } //.padding(.bottom, -30)
+      
       Section(header: Text("sound-options").foregroundColor(.green)) {
         
         Toggle("voice-on", isOn: $mySetting.voiceOn)

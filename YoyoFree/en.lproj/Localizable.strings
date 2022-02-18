@@ -15,7 +15,7 @@
 "level" = "Level";
 "test-type-msg" = "Please change the type of test by tapping the label on the main screen";
 "total" = "Total:";
-"howto" = "HowTo. The Basics";
+"howto" = "The Basics";
 "howto-msg" = "
 - Flat surface
 - Mark 20 meters
@@ -47,6 +47,7 @@ Caution: this app will not run in the background.
 //ResultView
 "result" = "Result";
 "you-scored" = "Your Distance:";
+"laps-table" = "Laps Table";
 
 //SettingsView
 "test-options"="Test Options";

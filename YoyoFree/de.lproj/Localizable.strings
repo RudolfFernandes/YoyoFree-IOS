@@ -1,0 +1,75 @@
+/* 
+  Localizable.strings
+  YoyoFree
+
+  Created by Rudy on 2021-10-26.
+  
+*/
+
+//ContentView
+"app-name" = "Yoyo Test";
+"app-name2" = "Recovery Level 1";
+"test-type" = "Art des Tests";
+"recovery" = "Recovery";
+"endurance" = "Endurance";
+"level" = "Stufe";
+"test-type-msg" = "Bitte ändern Sie die Art des Tests, indem Sie auf das Etikett auf dem Hauptbildschirm tippen";
+"total" = "Gesamt:";
+"howto" = "Die Grundlagen";
+"howto-msg" = "
+- Ebene Fläche
+- Markieren Sie 20 Meter
+- Beginnen Sie an einem Ende, bei Piepton
+- Berühren Sie das andere Ende vor/vor dem Piepton
+- Ein-Fuß-Berührung ist in Ordnung
+- Neustart nur bei Piepton
+- Greifen Sie zurück auf/vor dem Piepton
+- Sich ausruhen. Wiederholen
+- Hin und her laufen
+- Reichweite nach Signalton ist 'fail'
+- Fail 2 aufeinander folgende ... Ende
+
+Achtung: Diese App läuft nicht im Hintergrund.
+";
+"query-comment" = "Anfrage/Kommentar";
+"write-above" = "Bitte über dieser Zeile schreiben";
+"volume-low" = "Lautstärke niedrig";
+"volume-low-msg" = "Achtung: Die Lautstärke Ihres Geräts ist möglicherweise zu niedrig, um die Geräusche gut zu hören";
+"ok" = "OK";
+"dont-show-again" = "Nicht mehr anzeigen";
+"settings-msg" = "Einstellungen (hilft dem Entwickler)";
+"stop-run" = "Lauf stoppen?";
+"are-you-sure" = "Bist du sicher?";
+"yes" = "Jawohl";
+"no" = "Nein";
+"close" = "Nah dran";
+
+//ResultView
+"result" = "Ergebnis";
+"you-scored" = "Ihre Distanz:";
+"laps-table" = "Rundentabelle";
+
+//SettingsView
+"test-options"="Testoptionen";
+"confirm-stop"="Stopp bestätigen";
+"confirm-stop-msg"="Berücksichtigt versehentliches Drücken der Stopptaste. Wenn diese Option aktiviert ist, wird ein zeitgesteuertes Dialogfeld angezeigt, um zu bestätigen, dass Sie den Test tatsächlich stoppen möchten";
+"auto-stop"="Auto-Stopp";
+"auto-stopped"="Automatisch gestoppt";
+"auto-stop-msg"="Stoppt den Test automatisch. Sie müssen das Gerät beim Laufen halten; lege es auf den Boden, wenn du fertig bist";
+"auto-stop-alert"="Ihr Gerät erkennt keine Bewegung. AutoStop funktioniert nicht";
+
+"sound-options" = "Tonoptionen";
+"voice-on" = "Sprachhinweis";
+"voice-on-msg" = "Aktiviert Sprachhinweise bei jeder Pegeländerung";
+"check-volume"="Lautstärke beim Start prüfen";
+"check-volume-msg"="Wenn diese Option aktiviert ist, werden Sie auf eine niedrige Lautstärkeeinstellung aufmerksam gemacht (nur beim App-Start)";
+"fix-volume"="Lautstärke sperren";
+"fix-volume-msg"="Verhindert versehentliche Lautstärkeänderungen beim Laufen. Tritt in Kraft, nachdem der Vorlauf-Countdown abgelaufen ist";
+"do-vibrate"="Vibrieren";
+"do-vibrate-msg"="Wenn aktiviert, vibriert es am Ende jedes Shuttles";
+"halfway-beep"="Halber Piepton";
+"halfway-beep-msg"="Wenn dies aktiviert ist, piept es auf halbem Weg des Shuttles. Hilft bei der Geschwindigkeitsanpassung. Auch wenn Sie wenig Platz haben";
+
+"about"="ÜBER";
+"version"="Ausführung";
+

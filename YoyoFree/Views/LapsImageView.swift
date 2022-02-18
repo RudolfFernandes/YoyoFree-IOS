@@ -18,7 +18,7 @@ struct LapsImageView: View {
         .font(.largeTitle)
         .foregroundColor(.blue)
         .padding()
-      Text("Laps Table")
+      Text("laps-table")
         .font(.title.weight(.bold))
         .foregroundColor(.green)
         .padding(.bottom)
@@ -27,13 +27,7 @@ struct LapsImageView: View {
         Image(myInfo.myLapsImage)
           .resizable()
           .scaledToFit()
-//          .padding()
       }
-      
-      //      Image(myInfo.myLapsImage)
-      //        .resizable()
-      //        .scaledToFit()
-      //        .padding()
       
       Label ("",
              systemImage: "arrowshape.turn.up.backward.fill")
@@ -47,20 +41,6 @@ struct LapsImageView: View {
         .padding(.leading, framewidth > 350 ? 13 : 7)
         .padding(.trailing, framewidth > 350 ? 13 : 7)
       
-      //      Button(action: {
-      //        presentationMode.wrappedValue.dismiss()
-      //      }) {
-      //        Text("ok")
-      //          .font(.callout)
-      //          .foregroundColor(.black)
-      //          .padding(5)
-      //      }
-      //      .buttonStyle(PlainButtonStyle())
-      //      .frame(minWidth:100)
-      //      .background(Color(UIColor.lightGray))
-      //      .cornerRadius(20)
-      //      .padding(10)
-      //    }
     }
   }
 }

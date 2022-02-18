@@ -1,0 +1,75 @@
+/* 
+  Localizable.strings
+  YoyoFree
+
+  Created by Rudy on 2021-10-26.
+  
+*/
+
+//ContentView
+"app-name" = "Yoyo Test";
+"app-name2" = "Recuperação Nivel 1";
+"test-type" = "Type of Test";
+"recovery" = "Recuperação";
+"endurance" = "Resistência";
+"level" = "Nivel";
+"test-type-msg" = "Altere o tipo de teste tocando no rótulo na tela principal";
+"total" = "Total:";
+"howto" = "O básico";
+"howto-msg" = "
+- Superfície plana
+- Marcar 20 metros
+- Comece em uma extremidade, em bip
+- Toque na outra extremidade/antes do bipe
+- O toque de um pé é bom
+- Comece de volta apenas no sinal sonoro
+- Alcance de volta/antes do bipe
+- Descanso. Repetir
+- Correr para frente e para trás
+- Alcance após o bipe é 'falha'
+- Falha 2 consecutivas ... fim
+
+Atenção: este aplicativo não será executado em segundo plano.
+";
+"query-comment" = "Consulta/Comentário";
+"write-above" = "Por favor, escreva acima desta linha";
+"volume-low" = "Volume baixo";
+"volume-low-msg" = "Atenção: o volume do seu dispositivo pode estar muito baixo para que os sons sejam ouvidos facilmente";
+"ok" = "OK";
+"dont-show-again" = "Não mostrar novamente";
+"settings-msg" = "Configurações (vai ajudar o desenvolvedor)";
+"stop-run" = "Parar de correr?";
+"are-you-sure" = "Tem certeza?";
+"yes" = "Sim";
+"no" = "Não";
+"close" = "Sua distância:";
+
+//ResultView
+"result" = "Resultado";
+"you-scored" = "Ihre Distanz:";
+"laps-table" = "Tabela de Voltas";
+
+//SettingsView
+"test-options"="Opções de Teste";
+"confirm-stop"="Confirmar Parada";
+"confirm-stop-msg"="Atende a pressionamentos acidentais do botão Parar. Se marcado, exibirá uma caixa de diálogo cronometrada para confirmar que você realmente deseja interromper o teste";
+"auto-stop"="Parada automática";
+"auto-stopped"="Parado Automático";
+"auto-stop-msg"="Interrompe o teste automaticamente. Você deve segurar o dispositivo durante a execução; coloque-o no chão quando terminar";
+"auto-stop-alert"="Desculpe, seu dispositivo não detecta movimento. AutoStop não funcionará";
+
+"sound-options" = "Opções de Som";
+"voice-on" = "Dica de Voz";
+"voice-on-msg" = "Permite dicas de voz em cada mudança de nível";
+"check-volume"="Verifique o volume ao iniciar";
+"check-volume-msg"="Quando marcado, você será alertado para uma configuração de volume baixo (somente na inicialização do aplicativo)";
+"fix-volume"="Bloquear Volume";
+"fix-volume-msg"="Evita alterações acidentais de volume durante a execução. Entra em vigor após a conclusão da contagem regressiva pré-execução";
+"do-vibrate"="Vibrar";
+"do-vibrate-msg"="Quando marcado, irá vibrar no final de cada ônibus espacial";
+"halfway-beep"="Bipe Médio";
+"halfway-beep-msg"="Quando marcado, emitirá um bipe na metade do caminho do ônibus. Ajuda no ajuste de velocidade. Além disso, se você tiver restrições de espaço";
+
+"about"="CERCA DE";
+"version"="Versão";
+

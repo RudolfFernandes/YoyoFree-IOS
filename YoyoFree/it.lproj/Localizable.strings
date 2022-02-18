@@ -1,0 +1,72 @@
+/* 
+  Localizable.strings
+  YoyoFree
+*/
+
+//ContentView
+"app-name" = "Yoyo Test";
+"app-name2" = "Recupero Livello 1";
+"test-type" = "Tipo di Test";
+"recovery" = "Recupero";
+"endurance" = "Resistenza";
+"level" = "Livello";
+"test-type-msg" = "Si prega di modificare il tipo di test toccando l'etichetta nella schermata principale";
+"total" = "Total:";
+"howto" = "Le basi";
+"howto-msg" = "
+- Superficie piana
+- Segna 20 metri
+- Inizia da un'estremità, al segnale acustico
+- Toccare l'altra estremità su/prima del segnale acustico
+- Il tocco di un piede va bene
+- Ricomincia solo al segnale acustico
+- Rispondi al/prima del segnale acustico
+- Riposo. Ripetere
+- Corri avanti e indietro
+- Raggiungere dopo il segnale acustico è \"fallito\"
+- Fallimento 2 consecutivi ... fine
+
+Attenzione: questa app non verrà eseguita in background.
+";
+"query-comment" = "Domanda/Commento";
+"write-above" = "Si prega di scrivere sopra questa riga";
+"volume-low" = "Volume Basso";
+"volume-low-msg" = "Attenzione: il volume del dispositivo potrebbe essere troppo basso per poter ascoltare facilmente i suoni";
+"ok" = "OK";
+"dont-show-again" = "Non mostrare più";
+"settings-msg" = "Impostazioni (aiuteranno lo sviluppatore)";
+"stop-run" = "Smetti di correre?";
+"are-you-sure" = "Sei sicuro?";
+"yes" = "Sì";
+"no" = "No";
+"close" = "Vicino";
+
+//ResultView
+"result" = "Risultato";
+"you-scored" = "La tua distanza:";
+"laps-table" = "Tabella dei Giri";
+
+//SettingsView
+"test-options"="Opzioni di Test";
+"confirm-stop"="Conferma Stop";
+"confirm-stop-msg"="Soddisfa le pressioni accidentali del pulsante Stop. Se selezionato, visualizzerà una finestra di dialogo a tempo per confermare che si desidera effettivamente interrompere il test";
+"auto-stop"="Auto Stop";
+"auto-stopped"="Arresto automatico";
+"auto-stop-msg"="Interrompe il test automaticamente. È necessario tenere il dispositivo durante l'esecuzione; posizionarlo sul pavimento una volta terminato";
+"auto-stop-alert"="Spiacenti, il tuo dispositivo non rileva i movimenti. L'arresto automatico non funzionerà";
+
+"sound-options" = "Opzioni Audio";
+"voice-on" = "Segnale vocale";
+"voice-on-msg" = "Abilita segnali vocali ad ogni cambio di livello";
+"check-volume"="Controlla il volume all'avvio";
+"check-volume-msg"="Se selezionato, verrai avvisato di un'impostazione di volume basso (solo all'avvio dell'app)";
+"fix-volume"="Blocca il Volume";
+"fix-volume-msg"="Impedisce modifiche accidentali del volume durante l'esecuzione. Entra in vigore al termine del conto alla rovescia prima dell'esecuzione";
+"do-vibrate"="Vibrare";
+"do-vibrate-msg"="Se selezionato, vibrerà alla fine di ogni navetta";
+"halfway-beep"="Bip a Metà";
+"halfway-beep-msg"="Quando selezionato, emetterà un segnale acustico a metà corsa della navetta. Aiuta con la regolazione della velocità. Inoltre, se sei limitato per lo spazio";
+
+"about"="DI";
+"version"="Versione";
+
