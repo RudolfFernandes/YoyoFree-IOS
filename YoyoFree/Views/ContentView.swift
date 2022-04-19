@@ -33,6 +33,7 @@
  06Feb22. 9/1.0.29. Fixed voicecue bug related to timerStep change (see playedLevelCue code)
  18Feb22. 10/1.0.30. Added German, Portuguese, Italian
       Some minor UI changes
+ 18Apr22. 11/1.0.31. Added "Rate the app" functionality. See doAppReview()
  */
 
 import SwiftUI
@@ -40,6 +41,7 @@ import AVFoundation
 import MessageUI
 import MediaPlayer
 import CoreMotion
+import StoreKit
 
 let MYSHUTTLEDISTANCE: Int = 20
 var levelSpeedMetersPerHour = [Int] ()
@@ -473,6 +475,8 @@ struct ContentView: View {
                 // If myQuote has some length, show it
                 if (myQuote.count > 0) {
                   showQuoteAlert = true
+                } else {
+                  doAppReview()
                 }
               })
           }
@@ -977,6 +981,35 @@ func getQuote() -> String {
   }
   
   return ""
+}
+
+// Lifted the next 4 functions from https://www.andyibanez.com/posts/strategies-asking-users-rate-your-app/
+func doAppReview() {
+  //print("runCount = \(UserDefaults.standard.integer(forKey: "runCount"))")
+  
+  if (UserDefaults.standard.integer(forKey: "runCount") < 25 ) {
+    return
+  }
+  
+  if let scene = getScene() {
+      SKStoreReviewController.requestReview(in: scene)
+  }
+}
+
+func getScene() -> UIWindowScene? {
+    if let iPadScene = getIPadScene() {
+        return iPadScene
+    } else {
+        return getIPhoneScene()
+    }
+}
+
+func getIPadScene() -> UIWindowScene? {
+    UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+}
+
+func getIPhoneScene() -> UIWindowScene? {
+    UIApplication.shared.connectedScenes.first as? UIWindowScene
 }
 
 extension Bundle {
